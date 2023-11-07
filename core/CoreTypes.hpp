@@ -12,13 +12,15 @@ namespace olympia::core_types
     enum RegFile : uint8_t {
         RF_INTEGER,
         RF_FLOAT,
+        RF_VECTOR,
         RF_INVALID,
         N_REGFILES = RF_INVALID
     };
 
     static inline const char * const regfile_names[] = {
         "integer",
-        "float"
+        "float",
+        "vector"
     };
 
     inline std::ostream & operator<<(std::ostream & os, const RegFile & rf)

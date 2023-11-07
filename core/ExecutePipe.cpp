@@ -15,6 +15,9 @@ namespace olympia
         else if(target_name == "fpu") {
             return core_types::RF_FLOAT;
         }
+        else if(target_name == "valu" || target_name == "vfpu"){
+            return core_types::RF_VECTOR;
+        }
         sparta_assert(false, "Not supported this target: " << target_name);
     }
 
@@ -52,7 +55,7 @@ namespace olympia
     void ExecutePipe::setupExecutePipe_()
     {
         // Setup scoreboard view upon register file
-        std::vector<core_types::RegFile> reg_files = {core_types::RF_INTEGER, core_types::RF_FLOAT};
+        std::vector<core_types::RegFile> reg_files = {core_types::RF_INTEGER, core_types::RF_FLOAT, core_types::RF_VECTOR};
         for(const auto rf : reg_files)
         {
             scoreboard_views_[rf].reset(new sparta::ScoreboardView(getContainer()->getName(),

@@ -48,6 +48,7 @@ namespace olympia
             PARAMETER(uint32_t, rename_queue_depth, 10, "Number of instructions queued for rename")
             PARAMETER(uint32_t, num_integer_renames, 128, "Number of integer renames")
             PARAMETER(uint32_t, num_float_renames,   128, "Number of float renames")
+            PARAMETER(uint32_t, num_vector_renames, 64, "Number of vector renames")
         };
 
         /**

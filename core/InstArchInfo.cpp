@@ -8,6 +8,8 @@ namespace olympia
     const InstArchInfo::TargetUnitMap InstArchInfo::dispatch_target_map = {
         {"alu",     InstArchInfo::TargetUnit::ALU},
         {"fpu",     InstArchInfo::TargetUnit::FPU},
+        {"valu",     InstArchInfo::TargetUnit::VALU},
+        {"vfpu",     InstArchInfo::TargetUnit::VFPU},
         {"br",      InstArchInfo::TargetUnit::BR},
         {"lsu",     InstArchInfo::TargetUnit::LSU},
         {"rob",     InstArchInfo::TargetUnit::ROB},
@@ -25,6 +27,7 @@ namespace olympia
         {"i2f",     InstArchInfo::TargetPipe::I2F},
         {"f2i",     InstArchInfo::TargetPipe::F2I},
         {"int",     InstArchInfo::TargetPipe::INT},
+        {"vint",     InstArchInfo::TargetPipe::VINT},
         {"lsu",     InstArchInfo::TargetPipe::LSU},
         {"mul",     InstArchInfo::TargetPipe::MUL},
         {"sys",     InstArchInfo::TargetPipe::SYS}

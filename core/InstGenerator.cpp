@@ -82,10 +82,13 @@ namespace olympia
         addElement(srcs, "fs1", mavis::InstMetaData::OperandFieldID::RS1, mavis::InstMetaData::OperandTypes::DOUBLE);
         addElement(srcs, "rs2", mavis::InstMetaData::OperandFieldID::RS2, mavis::InstMetaData::OperandTypes::LONG);
         addElement(srcs, "fs2", mavis::InstMetaData::OperandFieldID::RS2, mavis::InstMetaData::OperandTypes::DOUBLE);
+        addElement(srcs, "vs1", mavis::InstMetaData::OperandFieldID::RS1, mavis::InstMetaData::OperandTypes::VECTOR);
+        addElement(srcs, "vs2", mavis::InstMetaData::OperandFieldID::RS2, mavis::InstMetaData::OperandTypes::VECTOR);
 
         mavis::OperandInfo dests;
         addElement(dests, "rd", mavis::InstMetaData::OperandFieldID::RD, mavis::InstMetaData::OperandTypes::LONG);
         addElement(dests, "fd", mavis::InstMetaData::OperandFieldID::RD, mavis::InstMetaData::OperandTypes::DOUBLE);
+        addElement(dests, "vd", mavis::InstMetaData::OperandFieldID::RD, mavis::InstMetaData::OperandTypes::VECTOR);
 
         InstPtr inst;
         if(jinst.find("imm") != jinst.end()) {

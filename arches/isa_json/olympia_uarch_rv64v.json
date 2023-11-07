@@ -1,0 +1,8 @@
+[
+    {
+		"mnemonic": "vadd.vv",
+		"dispatch" : ["valu"],
+        "pipe" : "vint",
+        "latency" : 1
+	}
+]

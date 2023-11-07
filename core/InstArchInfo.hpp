@@ -38,6 +38,8 @@ namespace olympia
         enum TargetUnit : std::uint16_t{
             ALU,
             FPU,
+            VALU,
+            VFPU,
             BR,
             LSU,
             ROB, // Instructions that go right to retire
@@ -56,6 +58,7 @@ namespace olympia
             I2F,
             F2I,
             INT,
+            VINT,
             LSU,
             MUL,
             SYS,
@@ -105,6 +108,12 @@ namespace olympia
                 break;
             case InstArchInfo::TargetUnit::FPU:
                 os << "FPU";
+                break;
+            case InstArchInfo::TargetUnit::VALU:
+                os << "VALU";
+                break;
+            case InstArchInfo::TargetUnit::VFPU:
+                os << "VFPU";
                 break;
             case InstArchInfo::TargetUnit::BR:
                 os << "BR";

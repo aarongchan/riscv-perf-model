@@ -57,8 +57,9 @@ namespace olympia
 
         setup_map(core_types::RegFile::RF_INTEGER, p->num_integer_renames);
         setup_map(core_types::RegFile::RF_FLOAT,   p->num_float_renames);
+        setup_map(core_types::RegFile::RF_VECTOR,   p->num_vector_renames);
 
-        static_assert(core_types::RegFile::N_REGFILES == 2, "New RF type added, but Rename not updated");
+        static_assert(core_types::RegFile::N_REGFILES == 3, "New RF type added, but Rename not updated");
     }
 
     // Using the Rename factory, create the Scoreboards

@@ -1,0 +1,31 @@
+Name:     Olympia RISC-V Perf Model 
+Cmdline:  /Users/aaronchan/Documents/sifive/riscv-perf-model/release/olympia -i1M /Users/aaronchan/Documents/sifive/riscv-perf-model/release/traces/dhry_riscv.zstf --arch medium_core --auto-summary off --report-all report_medium.out
+Exe:      /Users/aaronchan/Documents/sifive/riscv-perf-model/release/olympia
+SimulatorVersion: v0.1.0
+Repro:    
+Start:    Tuesday Tue Jan 24 14:24:11 2023
+Elapsed:  0.054474s
+
+
+Error:
+================================================================================
+Cannot open JSON ISA file 'mavis_isa_files/isa_rv64g.json'
+
+
+Backtrace:
+================================================================================
+<No backtrace available. Exception may not have been a SpartaException>
+
+
+Scheduler:  
+================================================================================
+Current Tick:  0
+Num Fired:     0
+Current Phase: Trigger
+Current Event: <null>
+
+sparta::Scheduler is empty
+
+
+================================================================================
+error-dump.dbg EOF
