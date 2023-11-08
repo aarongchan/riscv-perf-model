@@ -61,6 +61,14 @@ olympia::CoreTopologySimple::CoreTopologySimple(){
             &factories->dispatch_rf
         },
         {
+            "issue_queue",
+            "cpu.core*",
+            "IssueQueue Pipes",
+            "issue_queue",
+            0,
+            &factories->issue_queue_rf
+        },
+        {
             "execute",
             "cpu.core*",
             "Execution Pipes",

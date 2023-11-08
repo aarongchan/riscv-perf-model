@@ -30,9 +30,9 @@ namespace olympia
         reg_file_(determineRegisterFile(node->getGroup())),
         collected_inst_(node, node->getName())
     {
-        in_execute_inst_.
-            registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(ExecutePipe, getInstsFromDispatch_,
-                                                                    InstPtr));
+        // in_execute_inst_.
+        //     registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(ExecutePipe, getInstsFromDispatch_,
+        //                                                             InstPtr));
 
         in_reorder_flush_.
             registerConsumerHandler(CREATE_SPARTA_HANDLER_WITH_DATA(ExecutePipe, flushInst_,
@@ -62,80 +62,6 @@ namespace olympia
 
         // Send initial credits
         out_scheduler_credits_.send(scheduler_size_);
-    }
-
-    ////////////////////////////////////////////////////////////////////////////////
-    // Callbacks
-    void ExecutePipe::getInstsFromDispatch_(const InstPtr & ex_inst)
-    {
-        // FIXME: Now every source operand should be ready
-        const auto & src_bits = ex_inst->getSrcRegisterBitMask(reg_file_);
-        if(scoreboard_views_[reg_file_]->isSet(src_bits))
-        {
-            // Insert at the end if we are doing in order issue or if the scheduler is empty
-            ILOG("Sending to issue queue " << ex_inst);
-            if (in_order_issue_ == true || ready_queue_.size() == 0) {
-                ready_queue_.emplace_back(ex_inst);
-            }
-            else {
-                // Stick the instructions in a random position in the ready queue
-                uint64_t issue_pos = uint64_t(std::rand()) % ready_queue_.size();
-                if (issue_pos == ready_queue_.size()-1) {
-                    ready_queue_.emplace_back(ex_inst);
-                }
-                else {
-                    uint64_t pos = 0;
-                    auto iter = ready_queue_.begin();
-                    while (iter != ready_queue_.end()) {
-                        if (pos == issue_pos) {
-                            ready_queue_.insert(iter, ex_inst);
-                            break;
-                        }
-                        ++iter;
-                        ++pos;
-                    }
-                }
-            }
-            // Schedule issue if the alu is not busy
-            if (unit_busy_ == false) {
-                issue_inst_.schedule(sparta::Clock::Cycle(0));
-            }
-        }
-        else{
-            scoreboard_views_[reg_file_]->
-                registerReadyCallback(src_bits, ex_inst->getUniqueID(),
-                                      [this, ex_inst](const sparta::Scoreboard::RegisterBitMask&)
-                                      {
-                                          this->getInstsFromDispatch_(ex_inst);
-                                      });
-            ILOG("Instruction NOT ready: " << ex_inst << " Bits needed:" << sparta::printBitSet(src_bits));
-        }
-    }
-
-    void ExecutePipe::issueInst_()
-    {
-        // Issue a random instruction from the ready queue
-        sparta_assert_context(unit_busy_ == false && ready_queue_.size() > 0,
-                              "Somehow we're issuing on a busy unit or empty ready_queue");
-        // Issue the first instruction
-        InstPtr & ex_inst_ptr = ready_queue_.front();
-        auto & ex_inst = *ex_inst_ptr;
-        ex_inst.setStatus(Inst::Status::SCHEDULED);
-        const uint32_t exe_time =
-            ignore_inst_execute_time_ ? execute_time_ : ex_inst.getExecuteTime();
-        collected_inst_.collectWithDuration(ex_inst, exe_time);
-        ILOG("Executing: " << ex_inst << " for "
-             << exe_time + getClock()->currentCycle());
-        sparta_assert(exe_time != 0);
-
-        ++total_insts_issued_;
-        // Mark the instruction complete later...
-        complete_inst_.preparePayload(ex_inst_ptr)->schedule(exe_time);
-        // Mark the alu as busy
-        unit_busy_ = true;
-        // Pop the insturction from the scheduler and send a credit back to dispatch
-        ready_queue_.pop_front();
-        out_scheduler_credits_.send(1, 0);
     }
 
     // Called by the scheduler, scheduled by complete_inst_.

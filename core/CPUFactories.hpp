@@ -9,6 +9,7 @@
 #include "Decode.hpp"
 #include "Rename.hpp"
 #include "Dispatch.hpp"
+#include "IssueQueue.hpp"
 #include "Execute.hpp"
 #include "LSU.hpp"
 #include "MMU.hpp"
@@ -50,6 +51,8 @@ namespace olympia{
 
         //! \brief Resouce Factory to build a Dispatch Unit
         DispatchFactory dispatch_rf;
+
+        IssueQueueFactory issue_queue_rf;
 
         //! \brief Resouce Factory to build a Execute Unit
         ExecuteFactory  execute_rf;

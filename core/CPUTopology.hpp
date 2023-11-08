@@ -148,6 +148,9 @@ namespace olympia{
         using ExecutionTopology      = std::vector<std::vector<std::string>>;
         using ExecutionTopologyParam = sparta::Parameter<ExecutionTopology>;
 
+        using IssueQueueTopology      = std::vector<std::vector<std::string>>;
+        using IssueQueueTopologyParam = sparta::Parameter<IssueQueueTopology>;
+
         CoreExtensions() : sparta::ExtensionsParamsOnly() {}
         virtual ~CoreExtensions() {}
 
@@ -164,9 +167,14 @@ namespace olympia{
                 reset(new ExecutionTopologyParam("execution_topology", ExecutionTopology(),
                                                  "Topology Post Dispatch -- the execution pipes. "
                                                  "Expect: [[\"<unit_name>\", \"<count>\"]] ", ps));
+            issue_queue_topology_.
+                reset(new IssueQueueTopologyParam("issue_queue_topology", IssueQueueTopology(),
+                                                 "Topology Post Dispatch -- the execution pipes. "
+                                                 "Expect: [[\"<unit_name>\", \"<count>\"]] ", ps));
         }
     private:
         std::unique_ptr<ExecutionTopologyParam> execution_topology_;
+        std::unique_ptr<IssueQueueTopologyParam> issue_queue_topology_;
 
     };
 

@@ -21,6 +21,13 @@ top.cpu.core0.extension.core_extensions:
   [["alu", "6"],
    ["fpu", "2"],
    ["br",  "2"]]
+  
+top.cpu.core0.extension.core_extensions:
+  issue_queue_topology:
+  [["int_queue_0", "alu0", "alu1", "alu2"],
+   ["int_queue_1", "alu3", "alu4", "alu5"],
+   ["fp_queue_0", "fpu0", "fpu1"],
+   ["br_queue_0", "br0", "br1"]]
 
 top.cpu.core0.rename.scoreboards:
   # From
