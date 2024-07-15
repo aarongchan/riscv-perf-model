@@ -666,8 +666,8 @@
     },
     {
         "mnemonic": "vle16.v",
-        "pipe": "?",
-        "latency": 0
+        "pipe": "vlsu",
+        "latency": 1
     },
     {
         "mnemonic": "vle16ff.v",
@@ -676,8 +676,8 @@
     },
     {
         "mnemonic": "vle32.v",
-        "pipe": "?",
-        "latency": 0
+        "pipe": "vlsu",
+        "latency": 1
     },
     {
         "mnemonic": "vle32ff.v",
@@ -686,8 +686,8 @@
     },
     {
         "mnemonic": "vle64.v",
-        "pipe": "?",
-        "latency": 0
+        "pipe": "vlsu",
+        "latency": 1
     },
     {
         "mnemonic": "vle64ff.v",
@@ -696,8 +696,8 @@
     },
     {
         "mnemonic": "vle8.v",
-        "pipe": "?",
-        "latency": 0
+        "pipe": "vlsu",
+        "latency": 1
     },
     {
         "mnemonic": "vle8ff.v",
@@ -731,23 +731,23 @@
     },
     {
         "mnemonic": "vlse16.v",
-        "pipe": "?",
-        "latency": 0
+        "pipe": "vlsu",
+        "latency": 1
     },
     {
         "mnemonic": "vlse32.v",
-        "pipe": "?",
-        "latency": 0
+        "pipe": "vlsu",
+        "latency": 1
     },
     {
         "mnemonic": "vlse64.v",
-        "pipe": "?",
-        "latency": 0
+        "pipe": "vlsu",
+        "latency": 1
     },
     {
         "mnemonic": "vlse8.v",
-        "pipe": "?",
-        "latency": 0
+        "pipe": "vlsu",
+        "latency": 1
     },
     {
         "mnemonic": "vluxei16.v",
