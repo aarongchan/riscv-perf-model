@@ -6,15 +6,15 @@
 namespace olympia
 {
     const InstArchInfo::TargetPipeMap InstArchInfo::execution_pipe_map = {
-        {"br",    InstArchInfo::TargetPipe::BR},    {"cmov",    InstArchInfo::TargetPipe::CMOV},
-        {"div",   InstArchInfo::TargetPipe::DIV},   {"faddsub", InstArchInfo::TargetPipe::FADDSUB},
-        {"float", InstArchInfo::TargetPipe::FLOAT}, {"fmac",    InstArchInfo::TargetPipe::FMAC},
-        {"i2f",   InstArchInfo::TargetPipe::I2F},   {"f2i",     InstArchInfo::TargetPipe::F2I},
-        {"int",   InstArchInfo::TargetPipe::INT},   {"lsu",     InstArchInfo::TargetPipe::LSU},
-        {"mul",   InstArchInfo::TargetPipe::MUL},   {"vint",    InstArchInfo::TargetPipe::VINT},
-        {"vset",  InstArchInfo::TargetPipe::VSET},  {"vmul",    InstArchInfo::TargetPipe::VMUL},
-        {"vdiv",  InstArchInfo::TargetPipe::VDIV},  {"sys",     InstArchInfo::TargetPipe::SYS},
-        {"?",     InstArchInfo::TargetPipe::UNKNOWN}};
+        {"br", InstArchInfo::TargetPipe::BR},       {"cmov", InstArchInfo::TargetPipe::CMOV},
+        {"div", InstArchInfo::TargetPipe::DIV},     {"faddsub", InstArchInfo::TargetPipe::FADDSUB},
+        {"float", InstArchInfo::TargetPipe::FLOAT}, {"fmac", InstArchInfo::TargetPipe::FMAC},
+        {"i2f", InstArchInfo::TargetPipe::I2F},     {"f2i", InstArchInfo::TargetPipe::F2I},
+        {"int", InstArchInfo::TargetPipe::INT},     {"lsu", InstArchInfo::TargetPipe::LSU},
+        {"mul", InstArchInfo::TargetPipe::MUL},     {"vint", InstArchInfo::TargetPipe::VINT},
+        {"vset", InstArchInfo::TargetPipe::VSET},   {"vmul", InstArchInfo::TargetPipe::VMUL},
+        {"vlsu", InstArchInfo::TargetPipe::VLSU},   {"vdiv", InstArchInfo::TargetPipe::VDIV},
+        {"sys", InstArchInfo::TargetPipe::SYS},    {"?",     InstArchInfo::TargetPipe::UNKNOWN}};
 
     void InstArchInfo::update(const nlohmann::json & jobj)
     {
@@ -33,7 +33,7 @@ namespace olympia
             execute_time_ = jobj["latency"].get<uint32_t>();
         }
 
-        is_load_store_ = (tgt_pipe_ == TargetPipe::LSU);
+        is_load_store_ = (tgt_pipe_ == TargetPipe::LSU || tgt_pipe_ == TargetPipe::VLSU);
         is_vset_ = {tgt_pipe_ == TargetPipe::VSET};
     }
 

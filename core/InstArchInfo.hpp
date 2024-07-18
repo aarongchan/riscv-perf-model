@@ -52,6 +52,7 @@ namespace olympia
             VMUL,
             VDIV,
             VSET,
+            VLSU,
             SYS,
             UNKNOWN
         };
@@ -134,7 +135,10 @@ namespace olympia
             os << "VDIV";
             break;
         case InstArchInfo::TargetPipe::VSET:
-            os << "VINT";
+            os << "VSET";
+            break;
+        case InstArchInfo::TargetPipe::VLSU:
+            os << "VLSU";
             break;
         case InstArchInfo::TargetPipe::SYS:
             os << "SYS";

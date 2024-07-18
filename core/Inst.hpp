@@ -265,6 +265,13 @@ namespace olympia
         // Set VL from vset (vsetivli, vsetvli)
         void setVL(uint32_t vl) { VCSRs_.vl = vl; }
 
+        // Set EEW from vlsu operation
+        void setEEW(uint32_t eew) { eew_ = eew; }
+        // Set MOP from vlsu operation
+        void setMOP(uint32_t mop) { mop_ = mop; }
+        // Set stride from vlsu operation
+        void setStride(uint32_t stride) { stride_ = stride; }
+
         // Set VTA (vector tail agnostic)
         // vta = true means agnostic, set destination values to 1's or maintain original
         // vta = false means undisturbed, maintain original destination values
@@ -296,9 +303,15 @@ namespace olympia
 
         uint32_t getVL() const { return VCSRs_.vl; }
 
+        uint32_t getMOP() const { return mop_; }
+
+        uint32_t getEEW() const { return eew_; }
+
         uint32_t getVTA() const { return VCSRs_.vta; }
 
         uint32_t getVLMAX() const { return VCSRs_.vlmax; }
+
+        uint32_t getStride() const { return stride_; }
 
         uint64_t getUOpDoneCount() { return uop_done_count_; }
 
@@ -485,6 +498,9 @@ namespace olympia
             1; // start at 1 because the uop count includes the parent instruction
         uint64_t uop_count_ = 0;
         VCSRs VCSRs_;
+        uint32_t eew_;
+        uint32_t mop_;
+        uint32_t stride_;
 
         // blocking vset is a vset that needs to read a value from a register value. A blocking vset
         // can't be resolved until after execution, so we need to block on it due to UOp fracturing
