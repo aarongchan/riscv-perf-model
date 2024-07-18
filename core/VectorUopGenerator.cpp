@@ -76,6 +76,12 @@ namespace olympia
         sparta::SpartaWeakPointer<olympia::Inst> weak_ptr_inst = current_inst_;
         uop->setUOpParent(weak_ptr_inst);
 
+        if(uop->isLoadStoreInst()){
+            // set base address according to LMUL, i.e if we're on the 3rd
+            // LMUL Uop, it's base address should be base address + 3 * EEW
+            uop->setTargetVAddr(uop->getTargetVAddr() + uop->getEEW() * uop->getUOpID());
+        }
+
         // Handle last uop
         if(num_uops_generated_ == num_uops_to_generate_)
         {
