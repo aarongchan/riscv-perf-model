@@ -58,6 +58,8 @@ namespace olympia
             PARAMETER(uint32_t, mmu_lookup_stage_length, 1, "Length of the mmu lookup stage")
             PARAMETER(uint32_t, cache_lookup_stage_length, 1, "Length of the cache lookup stage")
             PARAMETER(uint32_t, cache_read_stage_length, 1, "Length of the cache read stage")
+            PARAMETER(uint32_t, data_width, 16, "Number of bits load/store per cycle")
+
         };
 
         /*!
@@ -67,6 +69,9 @@ namespace olympia
          */
         LSU(sparta::TreeNode* node, const LSUParameterSet* p);
 
+        // Constructor used for VLSU creation
+        LSU(sparta::TreeNode* node, const LSUParameterSet* p, bool vector_constructor);
+        
         //! Destroy the LSU
         ~LSU();
 
@@ -82,7 +87,10 @@ namespace olympia
 
         using FlushCriteria = FlushManager::FlushingCriteria;
 
-      private:
+        uint32_t data_width_;
+        // Typically called when the simulator is shutting down due to an exception
+        // writes out text to aid debug
+        void dumpDebugContent_(std::ostream & output) const override final;
         using ScoreboardViews =
             std::array<std::unique_ptr<sparta::ScoreboardView>, core_types::N_REGFILES>;
 
@@ -246,10 +254,6 @@ namespace olympia
         // will be called
         void onStartingTeardown_() override;
 
-        // Typically called when the simulator is shutting down due to an exception
-        // writes out text to aid debug
-        void dumpDebugContent_(std::ostream & output) const override final;
-
         ////////////////////////////////////////////////////////////////////////////////
         // Regular Function/Subroutine Call
         ////////////////////////////////////////////////////////////////////////////////
@@ -338,6 +342,7 @@ namespace olympia
                                   sparta::Counter::COUNT_NORMAL};
 
         friend class LSUTester;
+        friend class VLSU; 
     };
 
     class LSUTester;

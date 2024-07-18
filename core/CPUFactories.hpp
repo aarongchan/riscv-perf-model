@@ -78,7 +78,7 @@ namespace olympia{
         sparta::ResourceFactory<olympia::LSU,
                                 olympia::LSU::LSUParameterSet> lsu_rf;
 
-        //! \brief Resource Factory to build a LSU Unit
+        //! \brief Resource Factory to build a VLSU Unit
         sparta::ResourceFactory<olympia::VLSU,
                                 olympia::VLSU::VLSUParameterSet> vlsu_rf;
 
