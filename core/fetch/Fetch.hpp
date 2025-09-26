@@ -20,10 +20,17 @@
 #include "InstGroup.hpp"
 #include "FlushManager.hpp"
 #include "MemoryAccessInfo.hpp"
+#include "fetch/BranchPredIF.hpp"
 
 namespace olympia
 {
     class InstGenerator;
+
+    namespace BranchPredictor {
+        class DefaultPrediction;
+        class DefaultUpdate;
+        class DefaultInput;
+    }
 
     /**
      * @file   Fetch.h
@@ -71,6 +78,10 @@ namespace olympia
               const FetchParameterSet * p);
 
         ~Fetch();
+
+        void setBranchPredictor(BranchPred_t* bp) {
+            branch_predictor_ = bp;
+        }
 
         //! \brief Name of this resource. Required by sparta::UnitFactory
         static const char * name;
@@ -147,6 +158,12 @@ namespace olympia
 
         // Instruction generation
         std::unique_ptr<InstGenerator> inst_generator_;
+
+        // Branch Predictor
+        using BranchPred_t = BranchPredictor::BranchPredictorIF<BranchPredictor::DefaultPrediction,
+                                                                BranchPredictor::DefaultUpdate,
+                                                                BranchPredictor::DefaultInput>;
+        BranchPred_t* branch_predictor_ = nullptr;
 
         // Fetch instruction event, the callback is set to request
         // instructions from the instruction cache and place them in the

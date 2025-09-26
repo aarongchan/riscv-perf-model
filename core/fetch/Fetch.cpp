@@ -10,6 +10,7 @@
 #include "InstGenerator.hpp"
 #include "decode/MavisUnit.hpp"
 #include "OlympiaAllocators.hpp"
+#include "fetch/SimpleBranchPred.hpp"
 
 #include "sparta/utils/MathUtils.hpp"
 #include "sparta/utils/LogUtils.hpp"
@@ -90,6 +91,14 @@ namespace olympia
 
         if (credits_icache_ == 0 || ibuf_.empty() || fetch_buffer_.size() > fetch_buffer_capacity_) { return; }
 
+        // Get branch prediction
+        BranchPredictor::DefaultPrediction br_pred;
+        BranchPredictor::DefaultInput br_input;
+        if (branch_predictor_ != nullptr) {
+            br_input.fetch_PC = ibuf_.front()->getPC();
+            br_pred = branch_predictor_->getPrediction(br_input);
+        }
+
         // Gather instructions going to the same cacheblock
         // NOTE: This doesn't deal with instructions straddling the blocks,
         // they should be placed into the next group
@@ -111,9 +120,20 @@ namespace olympia
         InstGroupPtr fetch_group_ptr = sparta::allocate_sparta_shared_pointer<InstGroup>(instgroup_allocator);
 
         // Place in fetch group for the memory access, and place in fetch buffer for later processing.
+        uint32_t inst_idx = 0;
         for (auto iter = ibuf_.begin(); iter != block_end; iter++) {
             fetch_group_ptr->emplace_back(*iter);
             fetch_buffer_.emplace_back(*iter);
+            if (branch_predictor_ != nullptr && inst_idx == br_pred.branch_idx) {
+                auto bp_info = std::make_unique<Inst::BranchPredictionInfo>();
+                bp_info->fetch_pc = br_input.fetch_PC;
+                bp_info->branch_idx = br_pred.branch_idx;
+                const auto fall_through_pc = br_input.fetch_PC + (br_pred.branch_idx * BranchPred_t::bytes_per_inst) + BranchPred_t::bytes_per_inst;
+                bp_info->predicted_taken = (br_pred.predicted_PC != fall_through_pc);
+                bp_info->predicted_target_pc = br_pred.predicted_PC;
+                (*iter)->setBranchPredictionInfo(std::move(bp_info));
+            }
+            inst_idx++;
         }
 
         // Set the last in block
@@ -237,6 +257,17 @@ namespace olympia
         ILOG("Fetch: received flush " << criteria);
 
         auto flush_inst = criteria.getInstPtr();
+
+        if (branch_predictor_ != nullptr && flush_inst->isMispredicted()) {
+            const auto bp_info = flush_inst->getBranchPredictionInfo();
+            sparta_assert(bp_info != nullptr);
+            BranchPredictor::DefaultUpdate upd;
+            upd.fetch_PC = bp_info->fetch_pc;
+            upd.branch_idx = bp_info->branch_idx;
+            upd.corrected_PC = flush_inst->getTargetVAddr();
+            upd.actually_taken = flush_inst->isTakenBranch();
+            branch_predictor_->updatePredictor(upd);
+        }
 
         // Rewind the tracefile
         if (criteria.isInclusiveFlush())

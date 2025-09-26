@@ -151,6 +151,23 @@ namespace olympia
                 scoreboard_views_[reg_file]->setReady(dest_bits);
             }
 
+            // Check for branch misprediction
+            if (ex_inst->isBranch()) {
+                const auto bp_info = ex_inst->getBranchPredictionInfo();
+                if (bp_info) {
+                    const bool actually_taken = ex_inst->isTakenBranch();
+                    const auto actual_target = ex_inst->getTargetVAddr();
+                    if ((bp_info->predicted_taken != actually_taken) ||
+                        (bp_info->predicted_taken && (bp_info->predicted_target_pc != actual_target)))
+                    {
+                        ex_inst->setMispredicted();
+                        ILOG("Mispredicted branch: " << ex_inst << " predicted_taken: " << bp_info->predicted_taken
+                             << " actually_taken: " << actually_taken << " predicted_target: " << std::hex
+                             << bp_info->predicted_target_pc << " actual_target: " << actual_target);
+                    }
+                }
+            }
+
             if (enable_random_misprediction_)
             {
                 if (ex_inst->isBranch() && (std::rand() % 20) == 0)

@@ -4,6 +4,8 @@
 #include "CPUFactory.hpp"
 #include <string>
 #include <algorithm>
+#include "fetch/Fetch.hpp"
+#include "fetch/SimpleBranchPred.hpp"
 
 /**
  * @brief Constructor for CPUFactory
@@ -90,6 +92,19 @@ auto olympia::CPUFactory::bindTree_(sparta::RootTreeNode* root_node,
         auto core_tree_node = root_node->getChild(std::string("cpu.core") +
                                                   std::to_string(num_of_cores));
         sparta_assert(core_tree_node != nullptr);
+
+        // Create branch predictor and connect to Fetch
+        auto fetch_node = core_tree_node->getChild("fetch");
+        sparta_assert(fetch_node != nullptr, "Fetch node not found in core " << num_of_cores);
+        auto fetch_unit = fetch_node->getResourceAs<olympia::Fetch>();
+        sparta_assert(fetch_unit != nullptr, "Fetch unit not found in core " << num_of_cores);
+        auto fetch_params = fetch_node->getParameterSet();
+        sparta_assert(fetch_params != nullptr, "Fetch parameter set not found in core " << num_of_cores);
+        auto num_to_fetch = fetch_params->getParameter("num_to_fetch")->getValueAs<uint32_t>();
+        auto bp = std::make_unique<BranchPredictor::SimpleBranchPredictor>(num_to_fetch);
+        fetch_unit->setBranchPredictor(bp.get());
+        branch_predictors_.emplace_back(std::move(bp));
+
         (core_tree_node->getChild("mmu")->getResourceAs<olympia::MMU>())->
                 setTLB(*private_nodes_.at(num_of_cores)->getResourceAs<olympia::SimpleTLB>());
         (core_tree_node->getChild("preloader")->getResourceAs<olympia::Preloader>())->

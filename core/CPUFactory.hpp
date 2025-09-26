@@ -8,8 +8,14 @@
 #include "CPU.hpp"
 #include "sparta/simulation/ResourceTreeNode.hpp"
 #include "CPUTopology.hpp"
+#include "fetch/BranchPredIF.hpp"
 
 namespace olympia{
+    namespace BranchPredictor {
+        class DefaultPrediction;
+        class DefaultUpdate;
+        class DefaultInput;
+    }
 
 /**
  * @file  CPUFactory.h
@@ -79,6 +85,14 @@ private:
      * @brief The user-defined topology unit
      */
     std::unique_ptr<CPUTopology> topology_;
+
+    /**
+     * @brief Branch predictor for each core
+     */
+    using BranchPred_t = BranchPredictor::BranchPredictorIF<BranchPredictor::DefaultPrediction,
+                                                            BranchPredictor::DefaultUpdate,
+                                                            BranchPredictor::DefaultInput>;
+    std::vector<std::unique_ptr<BranchPred_t>> branch_predictors_;
 
     /**
      * @brief Vector of instantiated resource names

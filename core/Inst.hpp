@@ -34,6 +34,20 @@ namespace olympia
      * \brief Example instruction that flows through the example/CoreModel
      */
 
+    // Information gathered from branch predictor
+    // This is stored in the branch instruction and passed down the pipeline
+    struct BranchPredictionInfo
+    {
+        // fetch PC of the branch instruction
+        uint64_t fetch_pc;
+        // index of the branch instruction in the fetch packet
+        uint32_t branch_idx;
+        // whether the branch is predicted to be taken
+        bool predicted_taken;
+        // predicted target PC of the branch
+        uint64_t predicted_target_pc;
+    };
+
     // Forward declaration of the Pair Definition class is must as we are friending it.
     class InstPairDef;
 
@@ -207,6 +221,15 @@ namespace olympia
         bool isMispredicted() const { return is_mispredicted_; }
 
         void setMispredicted() { is_mispredicted_ = true; }
+
+        // Getter and Setter for branch prediction info
+        const BranchPredictionInfo* getBranchPredictionInfo() const {
+            return branch_prediction_info_.get();
+        }
+
+        void setBranchPredictionInfo(std::unique_ptr<BranchPredictionInfo> bp_info) {
+            branch_prediction_info_ = std::move(bp_info);
+        }
 
         // TBD -- add branch prediction
         void setSpeculative(bool spec) { is_speculative_ = spec; }
@@ -525,6 +548,7 @@ namespace olympia
         // Did this instruction mispredict?
         bool is_mispredicted_ = false;
         bool is_taken_branch_ = false;
+        std::unique_ptr<BranchPredictionInfo> branch_prediction_info_ = nullptr;
         bool last_in_fetch_block_ = false; // This is the last instruction in the fetch block
         sparta::Scheduleable* ev_retire_ = nullptr;
         Status status_state_;
